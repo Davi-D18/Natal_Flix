@@ -6,3 +6,5 @@ echo ""
 
 echo "\nArquivos alterados:" >> "$1"
 git diff --cached --name-only >> "$1"
+
+chmod +x .husky/*
