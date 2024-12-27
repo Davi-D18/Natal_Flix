@@ -1,11 +1,11 @@
-sleep 1.5
-
 git fetch
 
 # Obtém informações das branches
 LOCAL=$(git rev-parse HEAD)
 REMOTE=$(git rev-parse @{u})
 BASE=$(git merge-base HEAD @{u})
+
+sleep 1.5
 
 # Verifica o estado de sincronização
 if [ "$LOCAL" = "$REMOTE" ]; then
