@@ -1,4 +1,4 @@
-GIT_TRACE=1
+export HUSKY_DEBUG=1
 echo "Verificando branch..." >&2
 
 git fetch
