@@ -1,6 +1,5 @@
-"$(dirname "$0")/_/husky.sh"
-
-echo "Verificando branch..."
+GIT_TRACE=1
+echo "Verificando branch..." >&2
 
 git fetch
 
@@ -13,8 +12,8 @@ echo ""
 
 # Verifica o estado de sincronização
 if [ "$LOCAL" = "$REMOTE" ]; then
-    echo "✅ Tudo sincronizado, finalizando..."
+    echo "✅ Tudo sincronizado, finalizando..." >&2
 elif [ "$LOCAL" = "$BASE" ]; then
-    echo "❌ Sua branch está desatualizada, faça um pull antes de fazer o push."
+    echo "❌ Sua branch está desatualizada, faça um pull antes de fazer o push." >&2
     exit 1
 fi
