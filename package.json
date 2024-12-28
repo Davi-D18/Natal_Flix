@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "lint:scss": "stylelint '**/*.scss'",
-    "lint:scss:fix": "stylelint '**/*.scss' --fix",
+    "lint:scss:fix": "stylelint '**/*.scss' --fix || exit 1",
     "prepare": "husky",
     "commit": "CZ_CONFIG=./.cz-config.cjs git-cz"
   },
@@ -43,9 +43,12 @@
     "vite": "^6.0.5"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
+    "*.{js,jsx}": [
       "prettier --write",
       "npm run lint --fix --file"
+    ],
+    "*.scss": [
+      "stylelint --fix"
     ]
   },
   "config": {
