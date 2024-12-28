@@ -1,10 +1,8 @@
 echo ""
 echo "verificando commit..."
 
-npx --no -- commitlint --edit "$1"
+npx --no-install commitlint --edit "$1" || exit 1
 echo ""
 
 echo "\nArquivos alterados:" >> "$1"
 git diff --cached --name-only >> "$1"
-
-chmod +x .husky/*

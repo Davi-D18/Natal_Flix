@@ -1,19 +1,53 @@
-export HUSKY_DEBUG=1
-echo "Verificando branch..." >&2
+echo "🔍 Verificando o build do Vite..." >&2
 
-git fetch
-
-# Obtém informações das branches
-LOCAL=$(git rev-parse HEAD)
-REMOTE=$(git rev-parse @{u})
-BASE=$(git merge-base HEAD @{u})
+# Verificar se o build do Vite foi bem-sucedido
+if ! npx vite build --mode production > /dev/null 2>&1; then
+    echo "❌ O build do Vite falhou. Corrija os erros antes de fazer o push." >&2
+    exit 1
+else 
+    echo "✅ O build do Vite foi realizado com sucesso." >&2
+fi
 
 echo ""
 
-# Verifica o estado de sincronização
-if [ "$LOCAL" = "$REMOTE" ]; then
-    echo "✅ Tudo sincronizado, finalizando..." >&2
-elif [ "$LOCAL" = "$BASE" ]; then
-    echo "❌ Sua branch está desatualizada, faça um pull antes de fazer o push." >&2
+# Verificar o ambiente de produção
+echo "🔍 Iniciando o preview do ambiente de produção..." >&2
+
+
+npx vite preview --mode production &
+
+# Salvar o PID do processo para verificar se ele está rodando
+VITE_PID=$!
+sleep 10
+
+# Verificar se o processo ainda está rodando
+if ! ps -p $VITE_PID > /dev/null; then
+    echo "❌ O ambiente de produção falhou. O processo do Vite não foi iniciado corretamente." >&2
     exit 1
 fi
+
+echo ""
+echo "✅ Ambiente de produção iniciado com sucesso." >&2
+clear
+
+echo ""
+echo "🔍 Testando o ambiente de produção..."
+echo ""
+
+# Verificar se o servidor está escutando na porta 4173
+if ! lsof -i :4173 > /dev/null; then
+    echo "❌ O servidor não está respondendo na porta 5000. Verifique os logs para mais detalhes." >&2
+    kill $VITE_PID # Finaliza o processo do Vite, caso o servidor não esteja funcionando
+    exit 1
+fi
+
+# Enviar uma requisição HTTP para garantir que o servidor está funcionando como esperado
+if ! curl -s --head --request GET http://localhost:4173 | grep "200 OK" > /dev/null; then
+    echo "❌ O servidor está respondendo com erro ou não está acessível. Verifique os logs para mais detalhes." >&2
+    kill $VITE_PID # Finaliza o processo do Vite em caso de falha na resposta
+    exit 1
+fi
+
+echo "✅ Ambiente de produção funcionando corretamente." >&2
+
+kill $VITE_PID

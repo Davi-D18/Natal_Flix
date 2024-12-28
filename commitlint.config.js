@@ -27,6 +27,10 @@ export default {
         'data', // Alterações na estrutura ou no conteúdo dos dados
         'config' // Alterações nas configurações do projeto
       ]
-    ]
+    ],
+    // Regras personalizada para verificar se há uma mensagem após o prefixo
+    'subject-empty': [2, 'never'],
+    'subject-min-length': [2, 'always', 3], // Mensagem do commit deve ter no mínimo 3 caracteres após o prefixo
+    'header-max-length': [2, 'always', 72] // Tamanho máximo do título (mensagem)
   }
 }
