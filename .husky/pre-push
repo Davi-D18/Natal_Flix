@@ -34,6 +34,8 @@ echo ""
 echo "🔍 Testando o ambiente de produção..."
 echo ""
 
+sleep 1.8
+
 # Verificar se o servidor está escutando na porta 4173
 if ! lsof -i :4173 > /dev/null; then
     echo "❌ O servidor não está respondendo na porta 5000. Verifique os logs para mais detalhes." >&2
