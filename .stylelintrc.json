@@ -8,7 +8,12 @@
     "block-no-empty": true,
     "declaration-block-no-duplicate-properties": true,
     "no-unknown-animations": true,
-    "selector-class-pattern": null,
+    "selector-class-pattern": [
+      "^[a-z0-9]+(?:_[a-z0-9]+)*(?:__[a-z0-9]+(?:_[a-z0-9]+)*(?:\\.[a-zA-Z0-9]+)?)?$",
+      {
+        "message": "O nome da classe do seletor deve seguir o padrão BEM adaptado (bloco__elemento_bloco.modificador)"
+      }
+    ],
     "no-descending-specificity": null,
     "color-named": "never",
     "order/properties-order": [

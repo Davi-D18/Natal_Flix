@@ -13,15 +13,15 @@ export function App() {
       <Header />
 
       <main>
-        <section className={S.secao__conteudoPrincipal}>
-          <div className={S.container__ConteudoPrincipal}>
-            <section className={S.conteudoPrincipal__informacaoFilmes}>
-              <div className={S.informacaoFilmes__info}>
+        <section className={S.main__content}>
+          <div className={S.main__container}>
+            <section className={S.content__movie_info}>
+              <div className={S.movie_info__details}>
                 <img src={nomeFilme} alt="nome do filme" />
                 <p>1h 37min | Aventura, Animação, Família</p>
               </div>
 
-              <div className={S.informacaoFilmes__description}>
+              <div className={S.movie_info__description}>
                 <p>
                   Jack Frost, um garoto que controla o inverno, se junta ao
                   seleto time dos Guardiões Imortais para impedir Breu, o
@@ -31,20 +31,20 @@ export function App() {
                 </p>
               </div>
 
-              <div className={S.informacaoFilmes__containerButtons}>
+              <div className={S.movie_info__buttons}>
                 <button>
-                  <img src={Icon_play} alt="Icone" />
+                  <img src={Icon_play} alt="Ícone" />
                   Assistir
                 </button>
 
                 <button>
-                  <img src={Icon_estrela} alt="Icone" />
+                  <img src={Icon_estrela} alt="Ícone" />
                   Adicionar aos Favoritos
                 </button>
               </div>
             </section>
 
-            <section className={S.conteudoPrincipal__imagemFilme}>
+            <section className={S.content__movie_image}>
               <img src={capaFilme} alt="Capa do filme" />
             </section>
           </div>

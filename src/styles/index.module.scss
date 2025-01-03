@@ -1,13 +1,13 @@
-.container__ConteudoPrincipal {
+.main__container {
   display: flex;
   max-width: 97vw;
   margin: 0 auto;
 }
 
-.conteudoPrincipal__informacaoFilmes {
+.content__movie_info {
   width: 50%;
 
-  .informacaoFilmes__info {
+  .movie_info__details {
     img {
       width: 95%;
       height: 95%;
@@ -20,14 +20,14 @@
     }
   }
 
-  .informacaoFilmes__description {
+  .movie_info__description {
     margin-top: 2rem;
     font-size: 2.6rem;
     font-weight: $regular;
     text-align: justify;
   }
 
-  .informacaoFilmes__containerButtons {
+  .movie_info__buttons {
     margin-top: 2rem;
 
     @include center-flex(vertical);
@@ -56,7 +56,7 @@
   }
 }
 
-.conteudoPrincipal__imagemFilme {
+.content__movie_image {
   width: 100%;
 
   img {
