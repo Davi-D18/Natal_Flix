@@ -1,55 +1,139 @@
-echo "🔍 Verificando o build do Vite..." >&2
+#!/bin/bash
 
-# Verificar se o build do Vite foi bem-sucedido
-if ! npx vite build --mode production > /dev/null 2>&1; then
-    echo "❌ O build do Vite falhou. Corrija os erros antes de fazer o push." >&2
-    exit 1
-else 
-    echo "✅ O build do Vite foi realizado com sucesso." >&2
+# Verifica se o bash está sendo usado
+if [ -z "$BASH_VERSION" ]; then
+    exec bash "$0" "$@"
 fi
 
-echo ""
+set -e
 
-# Verificar o ambiente de produção
-echo "🔍 Iniciando o preview do ambiente de produção..." >&2
+# Função para exibir um spinner enquanto o processo está rodando
+spinner() {
+    local pid=$1
+    local message=$2
+    local delay=0.1
+    local spinstr=("⠋" "⠙" "⠹" "⠸" "⠼" "⠴" "⠦" "⠧" "⠇" "⠏")
+    local i=0
+    tput civis # Esconde o cursor
+    while ps -p $pid >/dev/null; do
+        printf "\r%s %s" "$message" "${spinstr[i]}"
+        i=$(((i + 1) % ${#spinstr[@]}))
+        sleep $delay
+    done
+    tput cnorm # Mostra o cursor
+    echo -ne "\r$message ✅\n"
+}
 
+# Função para exibir a seção de mensagens principais de forma mais organizada e centralizada
+show_message() {
+    clear
+    local msg1="$1"
+    local msg2="$2"
+    local len=${#msg1}
+    local width=50 # Largura do terminal para centralizar
 
-npx vite preview --mode production &
+    # Adiciona espaçamento à esquerda e direita para centralizar
+    local padding=$(((width - len) / 2))
+    local spaces=$(printf "%-${padding}s" " ")
 
-# Salvar o PID do processo para verificar se ele está rodando
-VITE_PID=$!
-sleep 10
+    echo "========================================================"
+    echo -e "${spaces}\033[1;34m$msg1\033[0m" # Título em azul, centralizado
+    echo "--------------------------------------------------------"
+    echo -e "${spaces}\033[1;32m$msg2\033[0m" # Ação em verde, centralizado
+    echo "========================================================"
+    echo ""
+}
 
-# Verificar se o processo ainda está rodando
-if ! ps -p $VITE_PID > /dev/null; then
-    echo "❌ O ambiente de produção falhou. O processo do Vite não foi iniciado corretamente." >&2
+# Função para finalizar o processo do Vite
+kill_vite_process() {
+    echo "🚫 Finalizando o processo do Vite..."
+    sleep 1.2
+    if [[ -n "$VITE_PID" ]]; then
+        pkill -f "vite preview" 2>/dev/null && echo "✅ Vite finalizado."
+    else
+        echo "ℹ️ Nenhum processo do Vite em execução."
+    fi
+}
+
+# Verifica se o Vite já está rodando na porta 4173
+check_vite_running() {
+    if nc -z localhost 4173 >/dev/null 2>&1; then
+        VITE_PID=$(lsof -t -i :4173)
+    else
+        VITE_PID=""
+    fi
+}
+
+# Exibe mensagem inicial
+show_message "Início do script: Configuração do Vite" "🔧 Preparando ambiente"
+sleep 1.6
+
+# Realiza o build do Vite
+show_message "Etapa 1: Build do Vite" "🔍 Iniciando o build..."
+npx vite build --mode production &>/dev/null &
+build_pid=$!
+spinner $build_pid "🔄 Realizando o build"
+
+wait $build_pid
+if [[ $? -ne 0 ]]; then
+    echo "❌ ERRO: Falha no build.\nDica: Verifique a saída de 'npx vite build' para mais detalhes." >&2
     exit 1
 fi
-
-echo ""
-echo "✅ Ambiente de produção iniciado com sucesso." >&2
-clear
-
-echo ""
-echo "🔍 Testando o ambiente de produção..."
-echo ""
 
 sleep 1.8
 
-# Verificar se o servidor está escutando na porta 4173
-if ! lsof -i :4173 > /dev/null; then
-    echo "❌ O servidor não está respondendo na porta 5000. Verifique os logs para mais detalhes." >&2
-    kill $VITE_PID # Finaliza o processo do Vite, caso o servidor não esteja funcionando
-    exit 1
+# Verifica se o servidor de preview já está rodando
+show_message "Etapa 2: Verificação do servidor de preview" "🔄 Aguardando servidor iniciar..."
+check_vite_running
+
+if [[ -z "$VITE_PID" ]]; then
+    npx vite preview --mode production &>/dev/null &
+    VITE_PID=$!
+    echo -n "🔄 Aguardando o servidor iniciar..."
+
+    i=1
+    while [ $i -le 10 ]; do
+        if nc -z localhost 4173 >/dev/null 2>&1; then
+            echo ""
+            echo "✅ Servidor iniciado."
+            sleep 1.5
+            break
+        fi
+
+        echo "($i/10)"
+        sleep 2
+        i=$((i + 1))
+    done
+
+    if ! nc -z localhost 4173 >/dev/null 2>&1; then
+        echo "❌ ERRO: Falha ao iniciar o servidor."
+        kill_vite_process
+        exit 1
+    fi
+else
+    echo "✅ Servidor já rodando na porta 4173."
+    sleep 1.5
 fi
 
-# Enviar uma requisição HTTP para garantir que o servidor está funcionando como esperado
-if ! curl -s --head --request GET http://localhost:4173 | grep "200 OK" > /dev/null; then
-    echo "❌ O servidor está respondendo com erro ou não está acessível. Verifique os logs para mais detalhes." >&2
-    kill $VITE_PID # Finaliza o processo do Vite em caso de falha na resposta
+# Testa a página
+show_message "Etapa 3: Verificação da página" "🔍 Validando página..."
+if ! node validatePage.cjs; then
+    echo ""
+    echo "❌ ERRO: Falha na validação da página. Confira o arquivo 'validation_report.txt' para mais detalhes."
+    kill_vite_process
     exit 1
+else
+    echo "✅ Página validada com sucesso."
 fi
 
-echo "✅ Ambiente de produção funcionando corretamente." >&2
+sleep 4
 
-kill $VITE_PID
+# Finaliza o servidor
+show_message "Etapa 4: Finalizando o servidor" "⚙️ Finalizando processo..."
+kill_vite_process
+sleep 1.3
+
+# Conclusão
+show_message "Script concluído com sucesso!" "🚀 Push será executado!"
+sleep 1.3
+exit 0
