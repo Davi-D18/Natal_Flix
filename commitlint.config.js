@@ -6,26 +6,26 @@ export default {
       2,
       'always',
       [
+        'build', // Mudanças no sistema de build ou dependências externas
+        'chore', // Tarefas de manutenção
+        'ci', // Mudanças em arquivos de configuração de CI
+        'config', // Alterações nas configurações do projeto
+        'data', // Alterações na estrutura ou no conteúdo dos dados
+        'deps', // Adição ou atualização de dependências
+        'design', // Alterações no design visual ou UX/UI
+        'docs', // Documentação
         'feat', // Nova funcionalidade
         'fix', // Correção de bug
-        'docs', // Documentação
-        'style', // Estilos (sem alteração de lógica)
-        'refactor', // Refatoração de código
-        'perf', // Melhoria de performance
-        'test', // Testes
-        'chore', // Tarefas de manutenção
-        'build', // Mudanças no sistema de build ou dependências externas
-        'ci', // Mudanças em arquivos de configuração de CI
-        'revert', // Reversão de commits anteriores
-        'wip', // Trabalho em progresso
-        'temp', // Alterações temporárias
-        'security', // Alterações relacionadas à segurança
-        'design', // Alterações no design visual ou UX/UI
         'locale', // Adições ou modificações relacionadas à localização (i18n)
+        'perf', // Melhoria de performance
+        'refactor', // Refatoração de código
+        'revert', // Reversão de commits anteriores
+        'security', // Alterações relacionadas à segurança
+        'style', // Estilos (sem alteração de lógica)
+        'temp', // Alterações temporárias
+        'test', // Testes
         'ux', // Melhorias na experiência do usuário
-        'deps', // Adição ou atualização de dependências
-        'data', // Alterações na estrutura ou no conteúdo dos dados
-        'config' // Alterações nas configurações do projeto
+        'wip' // Trabalho em progresso
       ]
     ],
     // Regras personalizada para verificar se há uma mensagem após o prefixo
