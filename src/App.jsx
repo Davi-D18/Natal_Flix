@@ -6,6 +6,8 @@ import nomeFilme from '@assets/images/titulo-filme.png'
 
 import Icon_play from '@assets/icons/play.png'
 import Icon_estrela from '@assets/icons/star_amarela.png'
+import { CardFilme } from './components/cardFilme/CardFilme'
+import { filmes } from './data/movies.js'
 
 export function App() {
   return (
@@ -48,6 +50,22 @@ export function App() {
               <img src={capaFilme} alt="Capa do filme" />
             </section>
           </div>
+        </section>
+
+        <section className={S.section__others_movies}>
+          <p>Continuar Assistindo</p>
+
+          <section className={S.other_movies__container}>
+            {filmes.map((filme) => (
+              <CardFilme
+                key={filme.id}
+                imagem={filme.image}
+                progresso={filme.progress}
+              />
+            ))}
+          </section>
+
+          <p>Filmes de Terror do Natal</p>
         </section>
       </main>
     </>
