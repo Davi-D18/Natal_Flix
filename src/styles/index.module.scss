@@ -82,7 +82,7 @@
   margin: 0 auto;
   margin-top: 3rem;
   padding-bottom: 2.5rem;
-
+  
   p {
     font-size: 1.6rem;
     font-weight: $bold;
@@ -95,9 +95,14 @@
   p:nth-child(3) {
     margin-top: 3rem;
   }
-
+  
   .other_movies__container {
+    overflow: scroll;
     display: flex;
     gap: 4rem;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 }
